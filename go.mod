@@ -1,4 +1,4 @@
-module github.com/ytrinh/ms-lib
+module github.com/dogoodpoints/ms-lib
 
 go 1.12
 
