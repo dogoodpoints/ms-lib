@@ -27,18 +27,24 @@ type GRPCTransport struct {
 
 // GRPCTransportOptions hold options for server
 type GRPCTransportOptions struct {
-	Addr string
+	Addr   string
+	Logger *log.Entry
 }
 
 // init prevents bootstrap race message
-func init() {
-	logger := log.WithField("module", "GRPCTransport")
-	grpc_logrus.ReplaceGrpcLogger(logger)
-}
+//func init() {
+//	logger := log.WithField("module", "GRPCTransport")
+//	grpc_logrus.ReplaceGrpcLogger(logger)
+//}
 
 // NewGRPCTransport
 func NewGRPCTransport(opts *GRPCTransportOptions) (*GRPCTransport, error) {
-	logger := log.WithField("module", "GRPCTransport")
+	logger := opts.Logger
+	if opts.Logger == nil {
+		logger = log.NewEntry(log.New())
+	}
+	logger = logger.WithField("module", "GRPCTransport")
+	grpc_logrus.ReplaceGrpcLogger(logger)
 
 	grpcTransport := GRPCTransport{
 		Logger:  logger,
