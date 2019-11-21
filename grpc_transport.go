@@ -44,7 +44,6 @@ func NewGRPCTransport(opts *GRPCTransportOptions) (*GRPCTransport, error) {
 		logger = log.NewEntry(log.New())
 	}
 	logger = logger.WithField("module", "GRPCTransport")
-	grpc_logrus.ReplaceGrpcLogger(logger)
 
 	grpcTransport := GRPCTransport{
 		Logger:  logger,
