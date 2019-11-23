@@ -14,6 +14,7 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -54,7 +55,8 @@ func NewGRPCTransport(opts *GRPCTransportOptions) (*GRPCTransport, error) {
 	payloadLoggingDecider := grpcTransport.defaultPayloadLoggingDecider()
 
 	logOpts := []grpc_logrus.Option{
-		grpc_logrus.WithLevels(grpc_logrus.DefaultCodeToLevel),
+		//grpc_logrus.WithLevels(grpc_logrus.DefaultCodeToLevel),
+		grpc_logrus.WithLevels(CustomCodeToLevel),
 	}
 
 	recoverOpts := []grpc_recovery.Option{
@@ -132,6 +134,16 @@ func (t *GRPCTransport) Close() error {
 	}
 
 	return nil
+}
+
+// CustomCodeToLevel to default OK calls to be debug level instead of info level
+func CustomCodeToLevel(code codes.Code) log.Level {
+	switch code {
+	case codes.OK:
+		return log.DebugLevel
+	default:
+		return grpc_logrus.DefaultCodeToLevel(code)
+	}
 }
 
 // recover
